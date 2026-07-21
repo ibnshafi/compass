@@ -1,0 +1,243 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  CAREGIVER
+  FAMILY_MEMBER
+  ADMIN
+}
+
+enum CareRecipientStatus {
+  ACTIVE
+  INACTIVE
+  HOSPITALIZED
+  DECEASED
+}
+
+enum MedicationUnit {
+  MG
+  MCG
+  G
+  ML
+  TABLET
+  CAPSULE
+  DROPS
+  PUFF
+  INJECTION
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ResourceType {
+  FOOD_ASSISTANCE
+  HOUSING
+  HEALTHCARE
+  TRANSPORTATION
+  LEGAL_AID
+  FINANCIAL_ASSISTANCE
+  MENTAL_HEALTH
+  SUPPORT_GROUP
+  HOME_CARE
+  ADULT_DAY_CARE
+  PRESCRIPTION_ASSISTANCE
+  UTILITY_ASSISTANCE
+  OTHER
+}
+
+model User {
+  id                String   @id @default(cuid())
+  clerkId           String   @unique
+  email             String   @unique
+  firstName         String?
+  lastName          String?
+  role              UserRole @default(CAREGIVER)
+  avatarUrl         String?
+  phoneNumber       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  careRecipients    CareRecipient[]
+  familyMemberships FamilyMember[]
+  tasks             CareTask[]
+  createdAppointments Appointment[]
+  createdResources   CommunityResource[]
+  aiConversations   AIConversation[]
+}
+
+model CareRecipient {
+  id          String              @id @default(cuid())
+  firstName   String
+  lastName    String
+  dateOfBirth DateTime?
+  age         Int?
+  gender      String?
+  relationship String
+  conditions          String[]
+  allergies           String[]
+  currentMedications  String[]
+  notes               String?
+  status              CareRecipientStatus @default(ACTIVE)
+  avatarUrl           String?
+  primaryCaregiverId  String
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  primaryCaregiver User             @relation(fields: [primaryCaregiverId], references: [id], onDelete: Cascade)
+  familyMembers    FamilyMember[]
+  medications      Medication[]
+  appointments     Appointment[]
+  tasks            CareTask[]
+  carePlans        CarePlan[]
+}
+
+model FamilyMember {
+  id              String   @id @default(cuid())
+  userId          String
+  careRecipientId String
+  role            String   @default("family")
+  permissions     String   @default("view_only")
+  invitedAt       DateTime @default(now())
+  acceptedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  careRecipient  CareRecipient @relation(fields: [careRecipientId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, careRecipientId])
+}
+
+model Medication {
+  id              String         @id @default(cuid())
+  name            String
+  dosage          String
+  unit            MedicationUnit @default(MG)
+  frequency       String
+  timeOfDay       String[]
+  notes           String?
+  startDate       DateTime?
+  endDate         DateTime?
+  prescribedBy    String?
+  pharmacy        String?
+  refillDate      DateTime?
+  refillReminder  Boolean        @default(false)
+  active          Boolean        @default(true)
+  careRecipientId String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  careRecipient CareRecipient @relation(fields: [careRecipientId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  type            String    @default("checkup")
+  dateTime        DateTime
+  endDateTime     DateTime?
+  location        String?
+  address         String?
+  provider        String?
+  providerPhone   String?
+  notes           String?
+  reminderBefore  Int       @default(60)
+  completed       Boolean   @default(false)
+  careRecipientId String
+  createdById     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  careRecipient CareRecipient @relation(fields: [careRecipientId], references: [id], onDelete: Cascade)
+  createdBy     User?         @relation(fields: [createdById], references: [id])
+}
+
+model CareTask {
+  id              String       @id @default(cuid())
+  title           String
+  description     String?
+  priority        TaskPriority @default(MEDIUM)
+  status          TaskStatus   @default(PENDING)
+  dueDate         DateTime?
+  completedAt     DateTime?
+  recurrenceRule  String?
+  category        String       @default("general")
+  careRecipientId String
+  assignedToId    String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  careRecipient CareRecipient @relation(fields: [careRecipientId], references: [id], onDelete: Cascade)
+  assignedTo    User?         @relation(fields: [assignedToId], references: [id])
+}
+
+model CarePlan {
+  id              String   @id @default(cuid())
+  title           String
+  summary         String?
+  goals           Json
+  dailyRoutine    Json?
+  recommendations Json?
+  emergencyInfo   Json?
+  isAIGenerated   Boolean  @default(true)
+  isActive        Boolean  @default(true)
+  careRecipientId String
+  createdById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  careRecipient CareRecipient @relation(fields: [careRecipientId], references: [id], onDelete: Cascade)
+}
+
+model CommunityResource {
+  id              String       @id @default(cuid())
+  name            String
+  description     String
+  type            ResourceType
+  address         String?
+  city            String?
+  state           String?
+  zipCode         String?
+  phone           String?
+  website         String?
+  email           String?
+  hours           String?
+  eligibility     String?
+  cost            String?
+  languages       String[]
+  tags            String[]
+  verified        Boolean      @default(false)
+  createdById     String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  createdBy       User?        @relation(fields: [createdById], references: [id])
+}
+
+model AIConversation {
+  id        String   @id @default(cuid())
+  title     String   @default("Chat")
+  messages  Json     @default("[]")
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+/* Theme definitions for Tailwind v4 */
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #0b1121;
+  --color-card: #ffffff;
+  --color-card-foreground: #0b1121;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0b1121;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #f8fafc;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #1e293b;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #1e293b;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #2563eb;
+  --radius: 0.5rem;
+}
+
+/* Dark mode overrides */
+.dark {
+  --color-background: #0b1121;
+  --color-foreground: #f8fafc;
+  --color-card: #0b1121;
+  --color-card-foreground: #f8fafc;
+  --color-popover: #0b1121;
+  --color-popover-foreground: #f8fafc;
+  --color-primary: #60a5fa;
+  --color-primary-foreground: #1e293b;
+  --color-secondary: #1e293b;
+  --color-secondary-foreground: #f8fafc;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #1e293b;
+  --color-accent-foreground: #f8fafc;
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #f8fafc;
+  --color-border: #1e293b;
+  --color-input: #1e293b;
+  --color-ring: #60a5fa;
+}
+
+/* Base styles */
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Animation utilities (replaces tailwindcss-animate) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@utility animate-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@utility animate-out {
+  animation: fadeIn 0.2s ease-out reverse;
+}
+
+@utility fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@utility fade-out {
+  animation: fadeIn 0.3s ease-out reverse;
+}
+
+@utility slide-in-from-bottom-2 {
+  animation: slideInFromBottom 0.2s ease-out;
+}
+
+@utility slide-in-from-top-2 {
+  animation: slideInFromTop 0.2s ease-out;
+}
+
+@utility zoom-in-95 {
+  animation: zoomIn 0.2s ease-out;
+}
+
+@utility zoom-out-95 {
+  animation: zoomOut 0.2s ease-out;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Custom scrollbar styles */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--color-muted-foreground) 30%, transparent);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--color-muted-foreground) 50%, transparent);
+  }
+}
