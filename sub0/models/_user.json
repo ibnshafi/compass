@@ -1,0 +1,54 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "clerkId": {
+    "type": "String",
+    "indexable": true
+  },
+  "email": {
+    "type": "String",
+    "indexable": true,
+    "max_length": 255
+  },
+  "firstName": {
+    "type": "String",
+    "optional": true,
+    "max_length": 100
+  },
+  "lastName": {
+    "type": "String",
+    "optional": true,
+    "max_length": 100
+  },
+  "role": {
+    "type": "String",
+    "max_length": 50
+  },
+  "avatarUrl": {
+    "type": "String",
+    "optional": true,
+    "max_length": 500
+  },
+  "phoneNumber": {
+    "type": "String",
+    "optional": true,
+    "max_length": 50
+  },
+  "password": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  },
+  "deletedAt": {
+    "type": "DateTime",
+    "optional": true
+  }
+}

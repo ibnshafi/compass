@@ -1,0 +1,24 @@
+{
+  "id": "resources-create-01",
+  "resource": "resources/create",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "INSERT INTO _community_resource (id, name, description, type, address, city, state, zipCode, phone, website, email, hours, eligibility, cost, languages, tags, verified, createdById, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)",
+        "parameters": ["$GENERATE_UUID", "name", "description", "type", "address", "city", "state", "zipCode", "phone", "website", "email", "hours", "eligibility", "cost", "languages", "tags", "verified", "$PROTECTED.id", "$DATETIME", "$DATETIME"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

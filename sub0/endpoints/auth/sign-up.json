@@ -1,0 +1,28 @@
+{
+  "id": "user-signup-01",
+  "resource": "auth/sign-up",
+  "tokenize": {
+    "type": "JWT",
+    "custom_claim_fields": ["id", "email"],
+    "expiration": 86400,
+    "encryption_key": "$ENV.JWT_KEY",
+    "property_name": "token"
+  },
+  "rate_limit": {
+    "limit": 5,
+    "identifier": "$HEADER.ip",
+    "expires_after": 60
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "INSERT INTO _user (id, clerkId, email, firstName, lastName, role, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+        "unique": ["email"],
+        "parameters": ["$GENERATE_UUID", "clerkId", "email", "firstName", "lastName", "role", "$DATETIME", "$DATETIME"]
+      }
+    }
+  ],
+  "returnables": ["ignore:password", "token"]
+}

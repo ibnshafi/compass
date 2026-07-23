@@ -1,0 +1,44 @@
+{
+  "id": "ai-explain-01",
+  "resource": "ai/explain",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "HTTPREQUEST",
+      "http": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer $ENV.OPENAI_API_KEY",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "model": "gpt-4o-mini",
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are a medical liaison who explains medical information to family caregivers in plain language. Return a JSON with: summary, keyTerms (array of {term, explanation}), actions (array of strings), questionsForDoctor (array of strings). Include a disclaimer."
+            },
+            {
+              "role": "user",
+              "content": "$PAYLOAD.text"
+            }
+          ],
+          "response_format": { "type": "json_object" },
+          "temperature": 0.3,
+          "max_tokens": 1000
+        }
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

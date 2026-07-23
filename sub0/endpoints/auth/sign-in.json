@@ -1,0 +1,27 @@
+{
+  "id": "user-signin-01",
+  "resource": "auth/sign-in",
+  "tokenize": {
+    "type": "JWT",
+    "custom_claim_fields": ["id", "email"],
+    "expiration": 86400,
+    "encryption_key": "$ENV.JWT_KEY",
+    "property_name": "token"
+  },
+  "rate_limit": {
+    "limit": 10,
+    "identifier": "$HEADER.ip",
+    "expires_after": 60
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT id, email, firstName, lastName, role, avatarUrl FROM _user WHERE email = $1 AND deletedAt IS NULL",
+        "parameters": ["email"]
+      }
+    }
+  ],
+  "returnables": ["ignore:password", "token"]
+}

@@ -1,0 +1,28 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "title": {
+    "type": "String",
+    "max_length": 255
+  },
+  "messages": {
+    "type": "JSON_ARRAY",
+    "property_type": "JSON_OBJECT",
+    "optional": true
+  },
+  "userId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_user",
+      "key": "id"
+    }
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

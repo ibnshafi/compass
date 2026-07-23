@@ -1,0 +1,43 @@
+{
+  "id": "ai-assist-01",
+  "resource": "ai/assist",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "HTTPREQUEST",
+      "http": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer $ENV.OPENAI_API_KEY",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "model": "gpt-4o-mini",
+          "messages": "$PAYLOAD.messages",
+          "temperature": 0.7,
+          "max_tokens": 1000
+        }
+      }
+    },
+    {
+      "id": 2,
+      "mode": "QUERY",
+      "depends_on": [{ "action": 1 }],
+      "sql_query": {
+        "query": "INSERT INTO _ai_conversation (id, title, messages, userId, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (id) DO UPDATE SET messages = $3, title = CASE WHEN _ai_conversation.title = 'Chat' THEN $2 ELSE _ai_conversation.title END, updatedAt = $6",
+        "parameters": ["conversationId", "title", "updatedMessages", "$PROTECTED.id", "$DATETIME", "$DATETIME"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

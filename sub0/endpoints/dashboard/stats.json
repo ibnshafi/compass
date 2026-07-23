@@ -1,0 +1,57 @@
+{
+  "id": "dashboard-stats-01",
+  "resource": "dashboard",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT COUNT(*) as total FROM _care_recipient WHERE primaryCaregiverId = $1 AND status = 'ACTIVE'",
+        "parameters": ["$PROTECTED.id"],
+        "main_returnable": true
+      }
+    },
+    {
+      "id": 2,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT COUNT(*) as total FROM _medication m JOIN _care_recipient cr ON m.careRecipientId = cr.id WHERE cr.primaryCaregiverId = $1 AND m.active = true",
+        "parameters": ["$PROTECTED.id"]
+      }
+    },
+    {
+      "id": 3,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT a.*, cr.firstName as recipientFirstName, cr.lastName as recipientLastName FROM _appointment a JOIN _care_recipient cr ON a.careRecipientId = cr.id WHERE cr.primaryCaregiverId = $1 AND a.dateTime >= NOW() AND a.dateTime <= NOW() + INTERVAL '7 days' AND a.completed = false ORDER BY a.dateTime ASC LIMIT 5",
+        "parameters": ["$PROTECTED.id"]
+      }
+    },
+    {
+      "id": 4,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT t.*, cr.firstName as recipientFirstName, cr.lastName as recipientLastName FROM _care_task t JOIN _care_recipient cr ON t.careRecipientId = cr.id WHERE cr.primaryCaregiverId = $1 AND t.status != 'COMPLETED' ORDER BY t.createdAt DESC LIMIT 5",
+        "parameters": ["$PROTECTED.id"]
+      }
+    },
+    {
+      "id": 5,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT m.id, m.name, m.dosage, m.unit, m.timeOfDay, cr.firstName as recipientFirstName, cr.lastName as recipientLastName FROM _medication m JOIN _care_recipient cr ON m.careRecipientId = cr.id WHERE cr.primaryCaregiverId = $1 AND m.active = true",
+        "parameters": ["$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

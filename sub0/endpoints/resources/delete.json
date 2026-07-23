@@ -1,0 +1,24 @@
+{
+  "id": "resources-delete-01",
+  "resource": "resources/:id/delete",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "DELETE FROM _community_resource WHERE id = $1 AND createdById = $2",
+        "parameters": ["$PARAM.id", "$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["id"]
+}

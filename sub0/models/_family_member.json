@@ -1,0 +1,41 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "userId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_user",
+      "key": "id"
+    }
+  },
+  "careRecipientId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_care_recipient",
+      "key": "id"
+    }
+  },
+  "role": {
+    "type": "String",
+    "max_length": 50
+  },
+  "permissions": {
+    "type": "String",
+    "max_length": 50
+  },
+  "invitedAt": {
+    "type": "DateTime"
+  },
+  "acceptedAt": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

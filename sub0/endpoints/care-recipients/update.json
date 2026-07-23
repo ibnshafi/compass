@@ -1,0 +1,24 @@
+{
+  "id": "care-recipients-update-01",
+  "resource": "care-recipients/:id/update",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "UPDATE _care_recipient SET firstName = COALESCE($1, firstName), lastName = COALESCE($2, lastName), dateOfBirth = COALESCE($3, dateOfBirth), age = COALESCE($4, age), gender = COALESCE($5, gender), relationship = COALESCE($6, relationship), conditions = COALESCE($7, conditions), allergies = COALESCE($8, allergies), currentMedications = COALESCE($9, currentMedications), notes = COALESCE($10, notes), status = COALESCE($11, status), updatedAt = $12 WHERE id = $13 AND primaryCaregiverId = $14",
+        "parameters": ["firstName", "lastName", "dateOfBirth", "age", "gender", "relationship", "conditions", "allergies", "currentMedications", "notes", "status", "$DATETIME", "$PARAM.id", "$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

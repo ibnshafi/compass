@@ -1,0 +1,53 @@
+{
+  "id": "ai-match-resources-01",
+  "resource": "ai/resources",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT id, name, description, type, city, state, eligibility, cost, tags FROM _community_resource WHERE verified = true",
+        "parameters": []
+      }
+    },
+    {
+      "id": 2,
+      "mode": "HTTPREQUEST",
+      "depends_on": [{ "action": 1 }],
+      "http": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer $ENV.OPENAI_API_KEY",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "model": "gpt-4o-mini",
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are a community resource specialist. Given a person's needs and available resources, identify which resources are most relevant. Return JSON: { matches: [{ resourceId, relevanceScore (0-100), reason, nextSteps }], summary, gaps }."
+            },
+            {
+              "role": "user",
+              "content": "The person needs: $PAYLOAD.needs. Location: $PAYLOAD.location. Available resources: $1"
+            }
+          ],
+          "response_format": { "type": "json_object" },
+          "temperature": 0.3,
+          "max_tokens": 1500
+        }
+      }
+    }
+  ],
+  "returnables": ["matches", "summary", "gaps"]
+}

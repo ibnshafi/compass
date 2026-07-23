@@ -1,0 +1,24 @@
+{
+  "id": "medications-list-01",
+  "resource": "medications",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT m.*, cr.firstName as recipientFirstName, cr.lastName as recipientLastName FROM _medication m JOIN _care_recipient cr ON m.careRecipientId = cr.id WHERE cr.primaryCaregiverId = $1 ORDER BY m.createdAt DESC",
+        "parameters": ["$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

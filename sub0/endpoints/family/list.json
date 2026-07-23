@@ -1,0 +1,24 @@
+{
+  "id": "family-list-01",
+  "resource": "family/list",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT fm.*, u.email, u.firstName, u.lastName, u.avatarUrl FROM _family_member fm JOIN _user u ON fm.userId = u.id WHERE fm.careRecipientId = $1 AND $1 IN (SELECT id FROM _care_recipient WHERE primaryCaregiverId = $2)",
+        "parameters": ["careRecipientId", "$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

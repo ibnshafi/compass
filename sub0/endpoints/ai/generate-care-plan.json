@@ -1,0 +1,71 @@
+{
+  "id": "ai-generate-care-plan-01",
+  "resource": "ai/care-plan",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT * FROM _care_recipient WHERE id = $1 AND primaryCaregiverId = $2",
+        "parameters": ["careRecipientId", "$PROTECTED.id"]
+      }
+    },
+    {
+      "id": 2,
+      "mode": "HTTPREQUEST",
+      "depends_on": [{ "action": 1 }],
+      "http": {
+        "url": "https://api.openai.com/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer $ENV.OPENAI_API_KEY",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "model": "gpt-4o-mini",
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are a compassionate care planning assistant. Create a detailed, personalized care plan for an elderly or disabled individual based on their information. Return a JSON object with: summary, goals (array of {category, title, description, targetDate}), dailyRoutine (object with morning/afternoon/evening/night arrays), recommendations (array of {category, title, description}), emergencyInfo (object with warningSigns array, emergencyContacts array, specialInstructions)."
+            },
+            {
+              "role": "user",
+              "content": "Create a care plan for: Name: ${firstName} ${lastName}, Age: ${age}, Conditions: ${conditions}, Allergies: ${allergies}, Medications: ${currentMedications}, Notes: ${notes}"
+            }
+          ],
+          "response_format": { "type": "json_object" },
+          "temperature": 0.7,
+          "max_tokens": 2000
+        }
+      }
+    },
+    {
+      "id": 3,
+      "mode": "QUERY",
+      "depends_on": [{ "action": 2 }],
+      "sql_query": {
+        "query": "UPDATE _care_plan SET isActive = false WHERE careRecipientId = $1",
+        "parameters": ["careRecipientId"]
+      }
+    },
+    {
+      "id": 4,
+      "mode": "QUERY",
+      "depends_on": [{ "action": 2 }],
+      "sql_query": {
+        "query": "INSERT INTO _care_plan (id, title, summary, goals, dailyRoutine, recommendations, emergencyInfo, isAIGenerated, isActive, careRecipientId, createdById, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
+        "parameters": ["$GENERATE_UUID", "title", "summary", "goals", "dailyRoutine", "recommendations", "emergencyInfo", true, true, "careRecipientId", "$PROTECTED.id", "$DATETIME", "$DATETIME"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

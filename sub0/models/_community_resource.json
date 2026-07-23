@@ -1,0 +1,92 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "name": {
+    "type": "String",
+    "max_length": 255,
+    "fts": true
+  },
+  "description": {
+    "type": "String",
+    "fts": true
+  },
+  "type": {
+    "type": "String",
+    "max_length": 100
+  },
+  "address": {
+    "type": "String",
+    "optional": true
+  },
+  "city": {
+    "type": "String",
+    "optional": true,
+    "max_length": 100
+  },
+  "state": {
+    "type": "String",
+    "optional": true,
+    "max_length": 50
+  },
+  "zipCode": {
+    "type": "String",
+    "optional": true,
+    "max_length": 20
+  },
+  "phone": {
+    "type": "String",
+    "optional": true,
+    "max_length": 50
+  },
+  "website": {
+    "type": "String",
+    "optional": true,
+    "max_length": 500
+  },
+  "email": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255
+  },
+  "hours": {
+    "type": "String",
+    "optional": true
+  },
+  "eligibility": {
+    "type": "String",
+    "optional": true
+  },
+  "cost": {
+    "type": "String",
+    "optional": true
+  },
+  "languages": {
+    "type": "JSON_ARRAY",
+    "property_type": "String",
+    "optional": true
+  },
+  "tags": {
+    "type": "JSON_ARRAY",
+    "property_type": "String",
+    "optional": true
+  },
+  "verified": {
+    "type": "Boolean"
+  },
+  "createdById": {
+    "type": "String",
+    "optional": true,
+    "foreign_key": {
+      "of": "_user",
+      "key": "id"
+    }
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

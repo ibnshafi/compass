@@ -1,0 +1,72 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "firstName": {
+    "type": "String",
+    "max_length": 100
+  },
+  "lastName": {
+    "type": "String",
+    "max_length": 100
+  },
+  "dateOfBirth": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "age": {
+    "type": "Number",
+    "optional": true
+  },
+  "gender": {
+    "type": "String",
+    "optional": true,
+    "max_length": 50
+  },
+  "relationship": {
+    "type": "String",
+    "max_length": 100
+  },
+  "conditions": {
+    "type": "JSON_ARRAY",
+    "property_type": "String",
+    "optional": true
+  },
+  "allergies": {
+    "type": "JSON_ARRAY",
+    "property_type": "String",
+    "optional": true
+  },
+  "currentMedications": {
+    "type": "JSON_ARRAY",
+    "property_type": "String",
+    "optional": true
+  },
+  "notes": {
+    "type": "String",
+    "optional": true
+  },
+  "status": {
+    "type": "String",
+    "max_length": 50
+  },
+  "avatarUrl": {
+    "type": "String",
+    "optional": true,
+    "max_length": 500
+  },
+  "primaryCaregiverId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_user",
+      "key": "id"
+    }
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

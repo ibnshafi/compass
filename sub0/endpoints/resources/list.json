@@ -1,0 +1,18 @@
+{
+  "id": "resources-list-01",
+  "resource": "resources",
+  "cacheable": {
+    "ttl": 300
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT * FROM _community_resource WHERE verified = true ORDER BY name ASC",
+        "parameters": []
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

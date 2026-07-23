@@ -1,0 +1,75 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "title": {
+    "type": "String",
+    "max_length": 255
+  },
+  "description": {
+    "type": "String",
+    "optional": true
+  },
+  "type": {
+    "type": "String",
+    "max_length": 100
+  },
+  "dateTime": {
+    "type": "DateTime"
+  },
+  "endDateTime": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "location": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255
+  },
+  "address": {
+    "type": "String",
+    "optional": true
+  },
+  "provider": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255
+  },
+  "providerPhone": {
+    "type": "String",
+    "optional": true,
+    "max_length": 50
+  },
+  "notes": {
+    "type": "String",
+    "optional": true
+  },
+  "reminderBefore": {
+    "type": "Number"
+  },
+  "completed": {
+    "type": "Boolean"
+  },
+  "careRecipientId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_care_recipient",
+      "key": "id"
+    }
+  },
+  "createdById": {
+    "type": "String",
+    "optional": true,
+    "foreign_key": {
+      "of": "_user",
+      "key": "id"
+    }
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

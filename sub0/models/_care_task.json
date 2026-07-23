@@ -1,0 +1,60 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "title": {
+    "type": "String",
+    "max_length": 255
+  },
+  "description": {
+    "type": "String",
+    "optional": true
+  },
+  "priority": {
+    "type": "String",
+    "max_length": 20
+  },
+  "status": {
+    "type": "String",
+    "max_length": 20
+  },
+  "dueDate": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "completedAt": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "recurrenceRule": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255
+  },
+  "category": {
+    "type": "String",
+    "max_length": 100
+  },
+  "careRecipientId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_care_recipient",
+      "key": "id"
+    }
+  },
+  "assignedToId": {
+    "type": "String",
+    "optional": true,
+    "foreign_key": {
+      "of": "_user",
+      "key": "id"
+    }
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

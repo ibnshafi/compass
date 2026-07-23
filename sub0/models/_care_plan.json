@@ -1,0 +1,90 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "title": {
+    "type": "String",
+    "max_length": 255
+  },
+  "summary": {
+    "type": "String",
+    "optional": true
+  },
+  "goals": {
+    "type": "JSON_ARRAY",
+    "property_type": "JSON_OBJECT",
+    "optional": true
+  },
+  "dailyRoutine": {
+    "type": "JSON_OBJECT",
+    "optional": true,
+    "properties": {
+      "morning": {
+        "type": "JSON_ARRAY",
+        "property_type": "String"
+      },
+      "afternoon": {
+        "type": "JSON_ARRAY",
+        "property_type": "String"
+      },
+      "evening": {
+        "type": "JSON_ARRAY",
+        "property_type": "String"
+      },
+      "night": {
+        "type": "JSON_ARRAY",
+        "property_type": "String"
+      }
+    }
+  },
+  "recommendations": {
+    "type": "JSON_ARRAY",
+    "property_type": "JSON_OBJECT",
+    "optional": true
+  },
+  "emergencyInfo": {
+    "type": "JSON_OBJECT",
+    "optional": true,
+    "properties": {
+      "warningSigns": {
+        "type": "JSON_ARRAY",
+        "property_type": "String"
+      },
+      "emergencyContacts": {
+        "type": "JSON_ARRAY",
+        "property_type": "String"
+      },
+      "specialInstructions": {
+        "type": "String"
+      }
+    }
+  },
+  "isAIGenerated": {
+    "type": "Boolean"
+  },
+  "isActive": {
+    "type": "Boolean"
+  },
+  "careRecipientId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_care_recipient",
+      "key": "id"
+    }
+  },
+  "createdById": {
+    "type": "String",
+    "optional": true,
+    "foreign_key": {
+      "of": "_user",
+      "key": "id"
+    }
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

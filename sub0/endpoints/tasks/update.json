@@ -1,0 +1,24 @@
+{
+  "id": "tasks-update-01",
+  "resource": "tasks/:id/update",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "UPDATE _care_task SET title = COALESCE($1, title), description = COALESCE($2, description), priority = COALESCE($3, priority), status = COALESCE($4, status), completedAt = CASE WHEN $5 = 'COMPLETED' THEN $6 ELSE completedAt END, dueDate = COALESCE($7, dueDate), category = COALESCE($8, category), assignedToId = COALESCE($9, assignedToId), updatedAt = $10 WHERE id = $11 AND careRecipientId IN (SELECT id FROM _care_recipient WHERE primaryCaregiverId = $12)",
+        "parameters": ["title", "description", "priority", "status", "status", "$DATETIME", "dueDate", "category", "assignedToId", "$DATETIME", "$PARAM.id", "$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

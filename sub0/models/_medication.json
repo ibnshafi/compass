@@ -1,0 +1,72 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true
+  },
+  "name": {
+    "type": "String",
+    "max_length": 255
+  },
+  "dosage": {
+    "type": "String",
+    "max_length": 100
+  },
+  "unit": {
+    "type": "String",
+    "max_length": 20
+  },
+  "frequency": {
+    "type": "String",
+    "max_length": 100
+  },
+  "timeOfDay": {
+    "type": "JSON_ARRAY",
+    "property_type": "String",
+    "optional": true
+  },
+  "notes": {
+    "type": "String",
+    "optional": true
+  },
+  "startDate": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "endDate": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "prescribedBy": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255
+  },
+  "pharmacy": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255
+  },
+  "refillDate": {
+    "type": "DateTime",
+    "optional": true
+  },
+  "refillReminder": {
+    "type": "Boolean"
+  },
+  "active": {
+    "type": "Boolean"
+  },
+  "careRecipientId": {
+    "type": "String",
+    "foreign_key": {
+      "of": "_care_recipient",
+      "key": "id"
+    }
+  },
+  "createdAt": {
+    "type": "DateTime"
+  },
+  "updatedAt": {
+    "type": "DateTime"
+  }
+}

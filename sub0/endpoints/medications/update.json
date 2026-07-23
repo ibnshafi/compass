@@ -1,0 +1,24 @@
+{
+  "id": "medications-update-01",
+  "resource": "medications/:id/update",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "UPDATE _medication SET name = COALESCE($1, name), dosage = COALESCE($2, dosage), unit = COALESCE($3, unit), frequency = COALESCE($4, frequency), timeOfDay = COALESCE($5, timeOfDay), notes = COALESCE($6, notes), active = COALESCE($7, active), refillDate = COALESCE($8, refillDate), refillReminder = COALESCE($9, refillReminder), updatedAt = $10 WHERE id = $11 AND careRecipientId IN (SELECT id FROM _care_recipient WHERE primaryCaregiverId = $12)",
+        "parameters": ["name", "dosage", "unit", "frequency", "timeOfDay", "notes", "active", "refillDate", "refillReminder", "$DATETIME", "$PARAM.id", "$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

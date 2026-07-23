@@ -1,0 +1,20 @@
+{
+  "id": "sync-clerk-01",
+  "resource": "auth/sync-clerk",
+  "rate_limit": {
+    "limit": 30,
+    "identifier": "$HEADER.ip",
+    "expires_after": 60
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "INSERT INTO _user (id, clerkId, email, firstName, lastName, role, avatarUrl, phoneNumber, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (clerkId) DO UPDATE SET email = $3, firstName = $4, lastName = $5, avatarUrl = $7, phoneNumber = $8, updatedAt = $10",
+        "parameters": ["$GENERATE_UUID", "data.id", "data.email", "data.first_name", "data.last_name", "CAREGIVER", "data.image_url", "data.phone", "$DATETIME", "$DATETIME"]
+      }
+    }
+  ],
+  "returnables": ["id", "email"]
+}

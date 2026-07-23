@@ -93,22 +93,68 @@ jobs:
           NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: "/dashboard"
           NEXT_PUBLIC_APP_URL: "http://localhost:3000"
 
-  docker:
-    name: Docker Build
+  # ── LingoQL Deploy (main branch only) ──
+  deploy-lingoql:
+    name: Deploy Frontend to LingoQL
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Install LingoQL CLI
+        run: |
+          curl -fsSL https://lingoql.com/install.sh | sh
+          echo "$HOME/.lingoql/bin" >> $GITHUB_PATH
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: false
-          tags: compass:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Deploy to LingoQL
+        run: |
+          lingoql deploy \
+            --token "${{ secrets.LINGOQL_DEPLOY_TOKEN }}" \
+            --project "compass-frontend" \
+            --build-dir . \
+            --env "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+            --env "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" \
+            --env "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" \
+            --env "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" \
+            --env "NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in" \
+            --env "NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up" \
+            --env "NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard" \
+            --env "NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard" \
+            --env "NEXT_PUBLIC_APP_URL=https://compass.lingoql.app" \
+            --env "SUB0_API_URL=${{ secrets.SUB0_API_URL }}" \
+            --env "LINGOQL_DEPLOY=true"
+
+  # ── Sub0 Deploy (main branch only) ──
+  deploy-sub0:
+    name: Deploy Backend to Sub0
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy Sub0 database models
+        run: |
+          # Deploy each model JSON file to Sub0 API
+          for model_file in sub0/models/*.json; do
+            model_name=$(basename "$model_file" .json)
+            echo "Deploying model: $model_name"
+            curl -X POST "${{ secrets.SUB0_API_URL }}/api/models" \
+              -H "Authorization: Bearer ${{ secrets.SUB0_DEPLOY_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d @"$model_file"
+          done
+
+      - name: Deploy Sub0 API endpoints
+        run: |
+          # Deploy each endpoint JSON file to Sub0 API
+          find sub0/endpoints -name "*.json" -type f | while read endpoint_file; do
+            resource=$(basename "$endpoint_file" .json)
+            echo "Deploying endpoint: $resource"
+            curl -X POST "${{ secrets.SUB0_API_URL }}/api/endpoints" \
+              -H "Authorization: Bearer ${{ secrets.SUB0_DEPLOY_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d @"$endpoint_file"
+          done
+

@@ -1,0 +1,33 @@
+{
+  "id": "care-recipients-get-01",
+  "resource": "care-recipients/:id",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT cr.*, u.firstName AS caregiverFirstName, u.lastName AS caregiverLastName FROM _care_recipient cr LEFT JOIN _user u ON cr.primaryCaregiverId = u.id WHERE cr.id = $1 AND cr.primaryCaregiverId = $2",
+        "parameters": ["$PARAM.id", "$PROTECTED.id"]
+      }
+    },
+    {
+      "id": 2,
+      "mode": "QUERY",
+      "depends_on": [{ "action": 1 }],
+      "sql_query": {
+        "query": "SELECT id, name, dosage, unit, frequency, timeOfDay, active, refillDate FROM _medication WHERE careRecipientId = $1 AND active = true ORDER BY name ASC",
+        "parameters": ["$PARAM.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}

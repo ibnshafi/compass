@@ -1,0 +1,24 @@
+{
+  "id": "care-plans-list-01",
+  "resource": "care-plans",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT * FROM _care_plan WHERE careRecipientId = $1 AND careRecipientId IN (SELECT id FROM _care_recipient WHERE primaryCaregiverId = $2) ORDER BY createdAt DESC",
+        "parameters": ["careRecipientId", "$PROTECTED.id"]
+      }
+    }
+  ],
+  "returnables": ["*"]
+}
