@@ -93,7 +93,7 @@ Invite family members to share care responsibilities, assign tasks, and stay inf
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/yourusername/compass.git
+git clone https://github.com/hexa3/compass.git
 cd compass
 npm install
 ```
@@ -168,7 +168,7 @@ docker-compose up -d
 
 ## 🚀 One-Click Vercel Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fcompass&env=DATABASE_URL,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,CLERK_SECRET_KEY,OPENAI_API_KEY&envDescription=Required%20environment%20variables%20for%20Compass&envLink=https%3A%2F%2Fgithub.com%2Fyourusername%2Fcompass%2Fblob%2Fmain%2F.env.example)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhexa3%2Fcompass&env=DATABASE_URL,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,CLERK_SECRET_KEY,OPENAI_API_KEY&envDescription=Required%20environment%20variables%20for%20Compass&envLink=https%3A%2F%2Fgithub.com%2Fhexa3%2Fcompass%2Fblob%2Fmain%2F.env.example)
 
 ### Prerequisites
 
@@ -208,7 +208,7 @@ Create a free PostgreSQL database:
 
 **Option A: One-Click Deploy**
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fcompass&env=DATABASE_URL,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,CLERK_SECRET_KEY,OPENAI_API_KEY)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhexa3%2Fcompass&env=DATABASE_URL,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,CLERK_SECRET_KEY,OPENAI_API_KEY)
 
 **Option B: Manual Deploy**
 
@@ -217,7 +217,7 @@ Create a free PostgreSQL database:
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin https://github.com/yourusername/compass.git
+git remote add origin https://github.com/hexa3/compass.git
 git push -u origin main
 
 # 2. Import in Vercel
