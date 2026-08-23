@@ -324,7 +324,7 @@ npx playwright test
 
 ## 📝 License
 
-MIT
+[MIT](LICENSE)
 
 ---
 
